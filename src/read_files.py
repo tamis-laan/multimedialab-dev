@@ -28,7 +28,7 @@ def process_video(file,f_features):
 	data		= []
 	frame_count 	= capture.get(7)
 	index 		= 0
-	print("[!] Extracting features from file: " + file)	
+	print("[*] Extracting features from file: " + file)	
 	while(True):
 		sys.stdout.write('\r' + str(index))
 		(ret,frame) = capture.read()
@@ -38,12 +38,13 @@ def process_video(file,f_features):
 		data.append(feature)
 		index = index+1
 	capture.release()
-	print("\n [!] Writing features to file: " + file+".npy")
-	numpy.save(file+".npy",data)
+	print("\n[*] Writing features to file: " + file + ".npy")
+	numpy.save(file + ".npy",data)
 
+#Extract the features from all four video files
 process_video("../media/video_01.ogv",extract_video_features)
 process_video("../media/video_02.ogv",extract_video_features)
 process_video("../media/video_03.ogv",extract_video_features)
 process_video("../media/video_04.ogv",extract_video_features)
 
-
+#Extract features from video clips (TODO)
