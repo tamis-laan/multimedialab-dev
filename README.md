@@ -3,14 +3,15 @@ multimedialab-dev
 
 Multimedia Development Version 
 
-*Folder containing video clips etc...*:
-**/media/**
+(**/media/**) - *Folder containing video clips etc...* 
 
-*This script downloads the relevant files.*:
-*/media/install.sh
 
-*This folder holds all the python source files*:
-*/src/
+(**/media/install.sh**) - *This script downloads the relevant files.*
 
-*This file parses the media and spits out feature vector files*:
-*/src/read_files.py**
+
+(**/src/**) - *This folder holds all the python source files*
+
+
+(**/src/read_files.py**) - *This file parses the media and spits out feature vector files*
+
+
