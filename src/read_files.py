@@ -1,11 +1,5 @@
-#Set the python modules search path 
 import sys
-sys.path.append('../lib')
-
-#Import libraries
 import numpy as numpy
-import matplotlib as plot
-import sklearn as ml
 import cv2 as opencv
 
 #This method extracts the feature from the given frame
@@ -22,12 +16,9 @@ def extract_video_features(frame):
 
 #This function reads in a video file and builds an array of features.
 def process_video(file,f_features):
-	capture	= opencv.VideoCapture(file)
-	capture.set(3,80)
-	capture.set(4,60)
 	data		= []
-	frame_count 	= capture.get(7)
 	index 		= 0
+	capture		= opencv.VideoCapture(file)
 	print("[*] Extracting features from file: " + file)	
 	while(True):
 		sys.stdout.write('\r' + str(index))
@@ -36,7 +27,7 @@ def process_video(file,f_features):
         		break
 		feature = f_features(frame)
 		data.append(feature)
-		index = index+1
+		index += 1
 	capture.release()
 	print("\n[*] Writing features to file: " + file + ".npy")
 	numpy.save(file + ".npy",data)
