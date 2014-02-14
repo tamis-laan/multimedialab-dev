@@ -47,6 +47,6 @@ def compare_to_database(clip,database):
 	plot.show()
 
 database = load_database()
-clip = database["video_03"]
-read_files.
-compare_to_database(clip[1000:1500],database)
+clip = read_files.process_video("../clips/clip01.ogv",read_files.extract_video_features)
+print(clip)
+compare_to_database(clip,database)

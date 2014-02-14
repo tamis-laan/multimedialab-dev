@@ -15,7 +15,7 @@ def extract_video_features(frame):
 def process_video(file,f_features):
 	data		= []
 	index 		= 0
-	capture		= opencv.VideoCapture("../media/"+file)
+	capture		= opencv.VideoCapture(file)
 	frame_count	= capture.get(opencv.cv.CV_CAP_PROP_FRAME_COUNT)	
 	while(True):
 		(ret,frame) = capture.read()
@@ -27,14 +27,14 @@ def process_video(file,f_features):
 		index += 1
 	capture.release()
 	print("\n")
+	if len(data) is 0:
+		print("[!] Error Reading Video")
 	return data
 
 def build_data_base():
 	print("[*] Constructing database")
 	for filename in glob.glob("../media/*.ogv"):
-		filename = filename[9:17]
-		print(" [-] Parsing file: " + filename)
-		numpy.save("../database/" + filename + ".npy",process_video(filename + ".ogv",extract_video_features))
+		print(" [-] Parsing file: " + filename[9:17])
+		numpy.save("../database/" + filename[9:17] + ".npy",process_video(filename,extract_video_features))
 
-
-
+process_video("../clips/clip01.ogv",extract_video_features)
