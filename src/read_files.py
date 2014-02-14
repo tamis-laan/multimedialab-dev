@@ -37,4 +37,4 @@ def build_data_base():
 		print(" [-] Parsing file: " + filename[9:17])
 		numpy.save("../database/" + filename[9:17] + ".npy",process_video(filename,extract_video_features))
 
-process_video("../clips/clip01.ogv",extract_video_features)
+process_video("../clips/clip.ogv",extract_video_features)
