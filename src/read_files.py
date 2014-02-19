@@ -2,7 +2,8 @@ import glob
 import sys
 import numpy as numpy
 import cv2 as opencv
-import matplotlib.pyplot as plot
+import pickle
+import re as regex
 
 def extract_video_features(frame):
 	shape=frame.shape
@@ -35,12 +36,28 @@ def process_video(file,f_features):
 	if not data:
 		print("[!] Error Reading Video")
 	return numpy.asarray(data)
-		
-def build_data_base():
+
+def build_database():
 	print("[*] Constructing database")
-	for filename in glob.glob("../media/*.ogv"):
-		print(" [-] Parsing file: " + filename[9:17])
-		numpy.save("../database/" + filename[9:17] + ".npy",process_video(filename,extract_video_features))
+	database = {}
+	for path in glob.glob("../media/*.ogv"):
+		print(path)
+		filename = ( regex.findall("/([^/]+)\.ogv",path) )[0]
+		print(" [-] Parsing path: " + path)
+		database[filename] = process_video(path,extract_video_features)	
+	print("[*] Saving database to disk")	
+	database_file = open('database.db','wb')
+	pickle.dump(database,database_file)
+	database_file.close()
+
+def load_database():
+	print("[*] Loading database from disk")
+	database_file = open('database.db', 'rb')
+	database = pickle.load(database_file)
+	database_file.close()
+	print("[*] Done")
+	return database
 
 
-
+build_database()
+database = load_database()
