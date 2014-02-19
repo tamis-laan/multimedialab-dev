@@ -63,11 +63,12 @@ def load_database():
 def sliding_window(window,signal):
 	wl	= len(window)
 	sl	= len(signal)
+	if sl-wl<0:
+		return ([],float("inf"),-1)
+
 	diff	= numpy.zeros(sl-wl)
 	minimum	= 9999
 	frame	= -1
-	if sl-wl<0:
-		return ([],float("inf"),-1)
 	for i in range(0,sl-wl):
 		diff[i] = numpy.linalg.norm(window-signal[i:(i+wl)])
 		if diff[i]<minimum:
