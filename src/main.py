@@ -14,39 +14,62 @@ def load_database():
 	print("[!] Done Loading")
 	return database
 
-def sliding_window(w,l):
-	shape = w.shape
-	awns = None
-	for i in range(0,shape[1]):
-		wi = numpy.transpose(w[:,i])
-		wi = wi[0]
-		li = numpy.transpose(l[:,i])
-		li = li[0]
-		conv = numpy.convolve(wi[::-1],li,'valid')
-		if(awns is None):
-			awns = [0]*len(conv)
-		awns += conv
-	return awns
-	
+def rolling_window(window,signal):
+	wl	= len(window)
+	sl	= len(signal)
+	out	= numpy.zeros(sl-wl)
+	m	= 9999
+	mi	= -1
+	for i in range(0,sl-wl):
+		out[i] = numpy.linalg.norm(window-signal[i:(i+wl)])
+		if out[i]<m:
+			m  = out[i]
+			mi = i
+	return (out,m,mi)
+
+def rolling_window_example():
+	database = load_database()
+	vid  = database["video_01"]
+	clip = vid[100:2000]
+	(corr,conv) = sliding_window(clip,vid)
+	my = rolling_window(clip,vid)
+	plot.plot(range(0,len(vid)),vid,'-b')
+	plot.plot(range(100,100+len(clip)),clip,'-r')
+	plot.plot(range(0,len(my)),my,'-g')
+	plot.show()
+
+def clip_example():
+	database = load_database()
+	vid  = database["video_01"]
+	clip = read_files.process_video("../clips/clip_01.mp4",read_files.extract_video_features)
+	(corr,conv) = sliding_window(clip,vid)
+	(my,mi) = rolling_window(clip,vid)
+	plot.plot(range(0,len(vid)),vid,'-b')
+	plot.plot(range(mi,mi+len(clip)),clip,'-r')
+	plot.plot(range(0,len(my)),my,'-g')
+	plot.show()
+
 def compare_to_database(clip,database):
 	print("[*] Comparing clip to database")
-	m 	= -99;
 	match 	= 'Error'
 	at 	= []
+	cm	= 9999
+	cmi	= -1
+	cv	= ""
 	for video_name in database:
 		print("  - " + video_name)
-		result = sliding_window(clip,database[video_name])
-		if max(result)>m:
-			m = max(result)
-			match = video_name
-			at = numpy.unravel_index(result.argmax(),result.shape)
+		(result,m,mi) = rolling_window(clip,database[video_name])
 		plot.plot(range(0,len(result)),result,label=video_name)
 		plot.legend()
-	print("[!] Done Comparing, identified video: " + match + "@"+str(at))
+		if m<cm:
+			cm  = m
+			cmi = mi
+			cv  = video_name 
+	print("[!] Done Comparing, identified video: " + cv + "@"+str(cmi))
 	print("[*] Plotting Results" )
 	plot.show()
 
 read_files.build_data_base()
-clip = read_files.process_video("../clips/clip_01.mp4",read_files.extract_video_features)
 database = load_database()
+clip = read_files.process_video("../clips/clip_01.mp4",read_files.extract_video_features)
 compare_to_database(clip,database)
