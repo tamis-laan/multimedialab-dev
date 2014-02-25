@@ -5,15 +5,26 @@ import numpy
 import cv2 as opencv
 import matplotlib.pyplot as plot
 import re as regex
+import math
 
 def extract_video_features(frame):
 	shape=frame.shape
 	num_pixels = shape[0]*shape[1]
-	hist_feature_r = opencv.calcHist([frame[:,:,0]],[0],None,[255],[0,256])/num_pixels
-	hist_feature_g = opencv.calcHist([frame[:,:,1]],[0],None,[255],[0,256])/num_pixels
-	hist_feature_b = opencv.calcHist([frame[:,:,2]],[0],None,[255],[0,256])/num_pixels
+	hist_feature_r = opencv.calcHist([frame[:,:,0]],[0],None,[2],[0,255])/num_pixels
+	hist_feature_g = opencv.calcHist([frame[:,:,1]],[0],None,[2],[0,255])/num_pixels
+	hist_feature_b = opencv.calcHist([frame[:,:,2]],[0],None,[2],[0,255])/num_pixels
 
+	gray = opencv.cvtColor(frame,opencv.COLOR_BGR2GRAY)
+	#laplacian = opencv.Laplacian(gray,opencv.CV_64F)
+	sobelx = opencv.Sobel(gray,opencv.CV_64F,1,0,ksize=5)
+	sobely = opencv.Sobel(gray,opencv.CV_64F,0,1,ksize=5)
+	theta  = numpy.arctan2(sobelx,sobely)
+
+	(hist_theta,_) = numpy.histogram(theta,2,(-math.pi,math.pi),True)
+	#print( numpy.concatenate( (hist_feature_r, hist_feature_g, hist_feature_b, hist_theta) ) )
+	
 	features = numpy.concatenate( (hist_feature_r, hist_feature_g, hist_feature_b) )
+	
 	return features
 
 def process_video(file,f_features):

@@ -21,7 +21,9 @@ def example03():
 	clip = medialab.process_video("../clips/clip_01.mp4",medialab.extract_video_features)
 	medialab.compare(clip,database)
 
-#medialab.build_database()
-example01()
-example02()
-example03()
+medialab.build_database()
+#example01()
+#example02()
+#example03()
+
+#clip = medialab.process_video("../clips/clip_01.mp4",medialab.extract_video_features)
